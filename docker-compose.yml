@@ -1,0 +1,65 @@
+services:
+
+  colosseum_mariadb:
+    container_name: colosseum_mariadb
+    image: mariadb:11.8
+    platform: linux/arm64
+    environment:
+      MARIADB_DATABASE: colosseum
+      MARIADB_ROOT_USER: root
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app_network
+
+  colosseum_phpmyadmin:
+    container_name: colosseum_phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - colosseum_mariadb
+    ports:
+      - "8081:80"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: colosseum_mariadb
+      UPLOAD_LIMIT: 300M
+    networks:
+      - app_network
+
+  colosseum_backend:
+    container_name: colosseum_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: backend:latest
+    platform: linux/arm64
+    working_dir: /app
+    depends_on:
+      - colosseum_mariadb
+    environment:
+      DB_HOST: colosseum_mariadb
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_DATABASE: colosseum
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: npm run start:dev
+    env_file: .env
+    networks:
+      - app_network
+
+volumes:
+  db_data:
+
+networks:
+  app_network:
+    driver: bridge
+
