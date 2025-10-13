@@ -9,7 +9,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './user/user.entity';
-import { Session } from './auth/session.entity';
+import { Session } from './auth/entity/session.entity';
 
 @Module({
   imports: [
@@ -30,7 +30,7 @@ import { Session } from './auth/session.entity';
       entities: [
         User,
         Session,
-        
+
       ],
       synchronize: true,
     }),
