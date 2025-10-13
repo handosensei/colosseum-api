@@ -6,9 +6,7 @@ services:
     platform: linux/arm64
     environment:
       MARIADB_DATABASE: colosseum
-      MARIADB_ROOT_USER: root
       MARIADB_ROOT_PASSWORD: root
-      MARIADB_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
       - "3306:3306"
     volumes:
