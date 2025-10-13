@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
-  Index,
 } from 'typeorm';
 import { User } from '../../user/user.entity';
 
@@ -13,7 +12,6 @@ export class Session {
   @PrimaryColumn({ type: 'varchar', length: 36 })
   id!: string;
 
-  @Index()
   @Column({ type: 'int', unsigned: true })
   userId!: number;
 

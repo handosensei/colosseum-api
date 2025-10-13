@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './user/user.entity';
 import { Session } from './auth/entity/session.entity';
+import { Nonce } from './auth/entity/nonce.entity';
 
 @Module({
   imports: [
@@ -27,11 +28,7 @@ import { Session } from './auth/entity/session.entity';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [
-        User,
-        Session,
-
-      ],
+      entities: [User, Session, Nonce],
       synchronize: true,
     }),
     UserModule,

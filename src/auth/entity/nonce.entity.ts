@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryColumn,
-  Column,
-  CreateDateColumn,
-  Index,
-} from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
 
 @Entity({ name: 'nonce' })
 export class Nonce {
@@ -12,7 +6,6 @@ export class Nonce {
   id!: string;
 
   @Column({ type: 'varchar', length: 255, unique: true })
-  @Index({ unique: true })
   address!: string;
 
   @Column({ type: 'varchar', length: 255 })
