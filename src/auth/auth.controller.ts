@@ -166,6 +166,7 @@ export class AuthController {
         walletAddress: user.walletAddress,
         role: user.role,
         username: user.username ?? null,
+        email: user.email ?? null,
       },
       session: { expiresAt },
     };
