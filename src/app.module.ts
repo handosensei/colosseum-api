@@ -14,6 +14,7 @@ import { Nonce } from './auth/entity/nonce.entity';
 import { BattleModule } from './battle/battle.module';
 import { Battle } from './battle/entities/battle.entity';
 import { Character } from './battle/entities/character.entity';
+import { Participation } from './battle/entities/participation.entity';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { Character } from './battle/entities/character.entity';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Session, Nonce, Battle, Character],
+      entities: [User, Session, Nonce, Battle, Character, Participation],
       synchronize: true,
     }),
     UserModule,

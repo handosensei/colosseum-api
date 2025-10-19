@@ -4,12 +4,12 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
-  JoinTable,
+  OneToMany,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { Character } from './character.entity';
+import { Participation } from './participation.entity';
 
 export enum BattleStatus {
   PENDING = 'pending',
@@ -47,24 +47,15 @@ export class Battle {
   @Column({ type: 'enum', enum: BattleStatus, default: BattleStatus.PENDING })
   status!: BattleStatus;
 
-  @ManyToOne(() => Character, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'winnerId' })
-  winner!: Character | null;
-
   @Column({ type: 'enum', enum: BettingType, default: BettingType.PARIMUTUEL })
   bettingType!: BettingType;
+
+  @OneToMany(() => Participation, (participation) => participation.battle)
+  participations: Participation[];
 
   @CreateDateColumn({ type: 'datetime' })
   createdAt!: Date;
 
   @UpdateDateColumn({ type: 'datetime' })
   updatedAt!: Date;
-
-  @ManyToMany(() => Character, (character) => character.battles)
-  @JoinTable({
-    name: 'battle_participants',
-    joinColumn: { name: 'battleId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'characterId', referencedColumnName: 'id' },
-  })
-  participants!: Character[];
 }

@@ -5,10 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { User } from '../../user/user.entity';
-import { Battle } from './battle.entity';
+import { Participation } from './participation.entity';
 
 @Entity({ name: 'character' })
 export class Character {
@@ -30,6 +30,6 @@ export class Character {
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   owner!: User;
 
-  @ManyToMany(() => Battle, (battle) => battle.participants)
-  battles!: Battle[];
+  @OneToMany(() => Participation, (p) => p.character)
+  participations!: Participation[];
 }
