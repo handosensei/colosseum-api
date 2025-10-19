@@ -1,6 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const whitelist = [
@@ -26,6 +27,9 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   const port = process.env.PORT ? Number(process.env.PORT) : 3000;
   console.log(`process.env.PORT : ${process.env.PORT}`);
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
   await app.listen(port);
 }
 bootstrap();
