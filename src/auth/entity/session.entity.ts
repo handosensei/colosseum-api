@@ -12,8 +12,8 @@ export class Session {
   @PrimaryColumn({ type: 'varchar', length: 36 })
   id!: string;
 
-  @Column({ type: 'int', unsigned: true })
-  userId!: number;
+  @Column({ type: 'varchar', length: 36 })
+  userId!: string;
 
   @ManyToOne(() => User, (user) => user.sessions, {
     onDelete: 'CASCADE',

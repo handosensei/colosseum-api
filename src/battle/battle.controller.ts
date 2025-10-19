@@ -19,16 +19,16 @@ export class BattleController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.battleService.findOne(+id);
+    return this.battleService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBattleDto: UpdateBattleDto) {
-    return this.battleService.update(+id, updateBattleDto);
+    return this.battleService.update(id, updateBattleDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.battleService.remove(+id);
+    return this.battleService.remove(id);
   }
 }

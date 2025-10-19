@@ -12,8 +12,8 @@ import { Battle } from './battle.entity';
 
 @Entity({ name: 'character' })
 export class Character {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column({ type: 'varchar', length: 255, unique: true })
   name!: string;
@@ -24,8 +24,8 @@ export class Character {
   @UpdateDateColumn({ type: 'datetime' })
   updatedAt!: Date;
 
-  @Column({ type: 'int', unsigned: true })
-  ownerId!: number;
+  @Column({ type: 'varchar', length: 36 })
+  ownerId!: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   owner!: User;

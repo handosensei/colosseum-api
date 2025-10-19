@@ -32,8 +32,8 @@ export enum BettingType {
 
 @Entity({ name: 'battle' })
 export class Battle {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column({ type: 'varchar', length: 255 })
   title!: string;

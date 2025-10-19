@@ -10,8 +10,8 @@ import { Session } from '../auth/entity/session.entity';
 
 @Entity({ name: 'user' })
 export class User {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-  id!: number; // Int auto-incrémenté
+  @PrimaryGeneratedColumn('uuid')
+  id!: string; // UUID v4
 
   @Column({ type: 'varchar', length: 255, unique: true })
   walletAddress!: string;

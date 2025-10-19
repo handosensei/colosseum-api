@@ -12,15 +12,15 @@ export class BattleService {
     return `This action returns all battle`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} battle`;
   }
 
-  update(id: number, updateBattleDto: UpdateBattleDto) {
+  update(id: string, updateBattleDto: UpdateBattleDto) {
     return `This action updates a #${id} battle`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} battle`;
   }
 }
