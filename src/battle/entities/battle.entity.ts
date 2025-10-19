@@ -50,7 +50,7 @@ export class Battle {
   @Column({ type: 'enum', enum: BettingType, default: BettingType.PARIMUTUEL })
   bettingType!: BettingType;
 
-  @OneToMany(() => Participation, (participation) => participation.battle)
+  @OneToMany(() => Participation, (p) => p.battle, { cascade: ['insert'] })
   participations: Participation[];
 
   @CreateDateColumn({ type: 'datetime' })

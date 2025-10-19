@@ -13,25 +13,21 @@ export class Participation {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: 'varchar', length: 36, name: 'battleId' })
+  @Column('uuid')
   battleId!: string;
 
-  @Column({ type: 'varchar', length: 36, name: 'characterId' })
+  @Column('uuid')
   characterId!: string;
 
   @Column({ type: 'boolean', default: false })
   isWinner!: boolean;
 
-  @ManyToOne(() => Battle, (battle) => battle.participations, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Battle, (b) => b.participations, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'battleId' })
   battle!: Battle;
 
   // Character relation may be enabled later if needed
-  @ManyToOne(() => Character, (character) => character.participations, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Character, (c) => c.participations, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'characterId' })
   character!: Character;
 }

@@ -15,7 +15,7 @@ import { JwtGuard } from '../auth/guards/jwt.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 
-@Controller('battle')
+@Controller('battles')
 export class BattleController {
   constructor(private readonly battleService: BattleService) {}
 
