@@ -27,21 +27,27 @@ export class BattleController {
   }
 
   @Get()
+  @UseGuards(JwtGuard)
   findAll() {
     return this.battleService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(JwtGuard)
   findOne(@Param('id') id: string) {
     return this.battleService.findOne(id);
   }
 
   @Patch(':id')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles('admin')
   update(@Param('id') id: string, @Body() updateBattleDto: BattleUpdateDto) {
     return this.battleService.update(id, updateBattleDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles('admin')
   remove(@Param('id') id: string) {
     return this.battleService.remove(id);
   }
