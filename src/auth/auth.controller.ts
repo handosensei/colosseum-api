@@ -7,7 +7,6 @@ import {
   Query,
   UnauthorizedException,
   Req,
-  Res,
   HttpCode,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,12 +17,10 @@ import { verifyMessage } from 'ethers';
 import { AuthService } from './auth.service';
 import { User } from '../user/user.entity';
 import { Session } from './entity/session.entity';
-import type { Request, Response } from 'express';
+import type { Request } from 'express';
 
 const NONCE_EXP_MS = 5 * 60 * 1000; // 5 minutes
 const SESSION_EXP_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-const COOKIE_NAME = process.env.COOKIE_NAME ?? 'colosseum_sid';
-const IS_PROD = process.env.NODE_ENV === 'production';
 
 @Controller('auth')
 export class AuthController {
@@ -81,8 +78,11 @@ export class AuthController {
   @HttpCode(200)
   async verify(
     @Body()
-    body: { address?: string; signature?: string; nonce?: string },
-    @Res({ passthrough: true }) res: Response,
+    body: {
+      address?: string;
+      signature?: string;
+      nonce?: string;
+    },
   ) {
     const { address, signature, nonce } = body ?? {};
     if (!address || !signature || !nonce) {
@@ -151,16 +151,9 @@ export class AuthController {
       role: user.role ?? 'user',
       jti,
     });
-
-    res.cookie(COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: IS_PROD,
-      sameSite: 'lax',
-      expires: expiresAt,
-      path: '/',
-    });
-
+    console.log('token', token);
     return {
+      token,
       user: {
         id: user.id,
         walletAddress: user.walletAddress,
@@ -192,7 +185,7 @@ export class AuthController {
     }
 
     const user = await this.userRepo.findOne({
-      where: { id: Number(sub) },
+      where: { id: sub },
       select: [
         'id',
         'walletAddress',
@@ -207,7 +200,7 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(200)
-  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async logout(@Req() req: Request) {
     const token = this.getTokenFromRequest(req);
     if (token) {
       try {
@@ -220,7 +213,6 @@ export class AuthController {
         // ignore
       }
     }
-    res.clearCookie(COOKIE_NAME, { path: '/' });
     return { ok: true };
   }
 
@@ -234,13 +226,11 @@ export class AuthController {
   }
 
   private getTokenFromRequest(req: Request): string | null {
-    const cookie = req.headers['cookie'];
-    if (!cookie) return null;
-    const parts = cookie.split(';').map((c) => c.trim());
-    for (const p of parts) {
-      if (p.startsWith(COOKIE_NAME + '=')) {
-        return decodeURIComponent(p.substring(COOKIE_NAME.length + 1));
-      }
+    const authHeader = req.get('authorization') ?? req.get('Authorization');
+    if (!authHeader) return null;
+    const prefix = 'Bearer ';
+    if (authHeader.startsWith(prefix)) {
+      return authHeader.slice(prefix.length).trim();
     }
     return null;
   }
