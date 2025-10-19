@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { BattleService } from './battle.service';
-import { CreateBattleDto } from './dto/create-battle.dto';
-import { UpdateBattleDto } from './dto/update-battle.dto';
+import { BattleCreateDto } from './dto/battle-create.dto';
+import { BattleUpdateDto } from './dto/battle-update.dto';
 
 @Controller('battle')
 export class BattleController {
   constructor(private readonly battleService: BattleService) {}
 
   @Post()
-  create(@Body() createBattleDto: CreateBattleDto) {
+  create(@Body() createBattleDto: BattleCreateDto) {
     return this.battleService.create(createBattleDto);
   }
 
@@ -23,7 +23,7 @@ export class BattleController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBattleDto: UpdateBattleDto) {
+  update(@Param('id') id: string, @Body() updateBattleDto: BattleUpdateDto) {
     return this.battleService.update(id, updateBattleDto);
   }
 

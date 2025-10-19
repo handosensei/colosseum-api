@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBattleDto } from './dto/create-battle.dto';
-import { UpdateBattleDto } from './dto/update-battle.dto';
+import { BattleCreateDto } from './dto/battle-create.dto';
+import { BattleUpdateDto } from './dto/battle-update.dto';
 
 @Injectable()
 export class BattleService {
-  create(createBattleDto: CreateBattleDto) {
+  create(createBattleDto: BattleCreateDto) {
     return 'This action adds a new battle';
   }
 
@@ -16,7 +16,7 @@ export class BattleService {
     return `This action returns a #${id} battle`;
   }
 
-  update(id: string, updateBattleDto: UpdateBattleDto) {
+  update(id: string, updateBattleDto: BattleUpdateDto) {
     return `This action updates a #${id} battle`;
   }
 
