@@ -24,6 +24,8 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  await app.listen(3000, '0.0.0.0');
+  const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+  console.log(`process.env.PORT : ${process.env.PORT}`);
+  await app.listen(port);
 }
 bootstrap();
