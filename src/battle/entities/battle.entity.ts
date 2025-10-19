@@ -11,20 +11,23 @@ import {
 } from 'typeorm';
 import { Character } from './character.entity';
 
-export enum BattleType {
-  DUEL = 'DUEL',
-  FREE_FOR_ALL = 'FREE_FOR_ALL',
+export enum BattleStatus {
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  FINISHED = 'finished',
+  CANCELLED = 'cancelled',
 }
 
-export enum BattleStatus {
-  PENDING = 'PENDING',
-  ONGOING = 'ONGOING',
-  COMPLETED = 'COMPLETED',
+export enum BattleType {
+  DUEL = 'duel',
+  // TEAM_BATTLE = 'TEAM_BATTLE',
+  // BATTLE_ROYALE = 'BATTLE_ROYALE',
 }
 
 export enum BettingType {
-  PARIMUTUEL = 'PARIMUTUEL',
-  FIXED_ODDS = 'FIXED_ODDS',
+  PARIMUTUEL = 'parimutuel',
+  // AMM = 'amm',
+  // FIXED_ODDS = 'FIXED_ODDS',
 }
 
 @Entity({ name: 'battle' })
@@ -35,7 +38,7 @@ export class Battle {
   @Column({ type: 'varchar', length: 255 })
   title!: string;
 
-  @Column({ type: 'enum', enum: BattleType })
+  @Column({ type: 'enum', enum: BattleType, default: BattleType.DUEL })
   type!: BattleType;
 
   @Column({ type: 'datetime' })
