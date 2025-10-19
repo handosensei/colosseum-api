@@ -1,13 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { BattleService } from './battle.service';
 import { BattleCreateDto } from './dto/battle-create.dto';
 import { BattleUpdateDto } from './dto/battle-update.dto';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('battle')
 export class BattleController {
   constructor(private readonly battleService: BattleService) {}
 
   @Post()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles('admin')
   create(@Body() createBattleDto: BattleCreateDto) {
     return this.battleService.create(createBattleDto);
   }
