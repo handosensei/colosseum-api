@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { BattleService } from './battle.service';
 import { BattleCreateDto } from './dto/battle-create.dto';
@@ -28,8 +29,14 @@ export class BattleController {
 
   @Get()
   @UseGuards(JwtGuard)
-  findAll() {
-    return this.battleService.findAll();
+  findAll(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('search') search?: string,
+  ) {
+    const p = Math.max(1, parseInt(page, 10) || 1);
+    const l = Math.min(50, Math.max(1, parseInt(limit, 10) || 10));
+    return this.battleService.findAll({ page: p, limit: l, search });
   }
 
   @Get(':id')

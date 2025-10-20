@@ -37,6 +37,7 @@
     "ethers": "^6.15.0",
     "keyv": "^5.3.3",
     "mysql2": "^3.13.0",
+    "nestjs-typeorm-paginate": "^4.1.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.21"

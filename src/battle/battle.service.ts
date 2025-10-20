@@ -1,10 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
+
 import { BattleCreateDto } from './dto/battle-create.dto';
 import { BattleUpdateDto } from './dto/battle-update.dto';
 import { Battle } from './entities/battle.entity';
 import { Participation } from './entities/participation.entity';
+
+type FindAllParams = { page: number; limit: number; search?: string };
 
 @Injectable()
 export class BattleService {
@@ -31,8 +35,21 @@ export class BattleService {
     return await this.battleRepo.save(battle);
   }
 
-  findAll() {
-    return `This action returns all battle`;
+  async findAll({
+    page,
+    limit,
+    search,
+  }: FindAllParams): Promise<Pagination<Battle>> {
+    const qb = this.battleRepo
+      .createQueryBuilder('b')
+      .leftJoinAndSelect('b.participations', 'p')
+      .orderBy('b.startTime', 'DESC');
+
+    if (search?.trim()) {
+      qb.andWhere('LOWER(b.title) LIKE :q', { q: `%${search.toLowerCase()}%` });
+    }
+
+    return paginate<Battle>(qb, { page, limit, route: '/battles' });
   }
 
   findOne(id: string) {
