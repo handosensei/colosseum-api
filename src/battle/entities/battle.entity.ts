@@ -8,7 +8,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Character } from './character.entity';
+import { Character } from '../../character/character.entity';
 import { Participation } from './participation.entity';
 
 export enum BattleStatus {

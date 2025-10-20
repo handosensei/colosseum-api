@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Character } from '../entities/character.entity';
+import { Character } from '../../character/character.entity';
 
 @ValidatorConstraint({ name: 'CharacterExists', async: true })
 @Injectable()

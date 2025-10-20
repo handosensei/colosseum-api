@@ -13,8 +13,9 @@ import { Session } from './auth/entity/session.entity';
 import { Nonce } from './auth/entity/nonce.entity';
 import { BattleModule } from './battle/battle.module';
 import { Battle } from './battle/entities/battle.entity';
-import { Character } from './battle/entities/character.entity';
+import { Character } from './character/character.entity';
 import { Participation } from './battle/entities/participation.entity';
+import { CharacterModule } from './character/character.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { Participation } from './battle/entities/participation.entity';
     UserModule,
     AuthModule,
     BattleModule,
+    CharacterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

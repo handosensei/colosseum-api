@@ -7,8 +7,8 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { User } from '../../user/user.entity';
-import { Participation } from './participation.entity';
+import { User } from '../user/user.entity';
+import { Participation } from '../battle/entities/participation.entity';
 
 @Entity({ name: 'character' })
 export class Character {

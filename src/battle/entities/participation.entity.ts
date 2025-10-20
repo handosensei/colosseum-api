@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Battle } from './battle.entity';
-import { Character } from './character.entity';
+import { Character } from '../../character/character.entity';
 
 @Entity({ name: 'participation' })
 export class Participation {
