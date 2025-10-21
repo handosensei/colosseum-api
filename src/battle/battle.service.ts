@@ -19,6 +19,17 @@ export class BattleService {
     private readonly participationRepo: Repository<Participation>,
   ) {}
 
+  async findNext(): Promise<Battle | null> {
+    const now = new Date();
+    return this.battleRepo
+      .createQueryBuilder('b')
+      .leftJoinAndSelect('b.participations', 'p')
+      .leftJoinAndSelect('p.character', 'c')
+      .where('b.startTime > :now', { now })
+      .orderBy('b.startTime', 'ASC')
+      .getOne();
+  }
+
   async create(battleCreateDto: BattleCreateDto) {
     const ids = battleCreateDto.participations.map((p) => p.characterId);
     if (new Set(ids).size !== ids.length) {

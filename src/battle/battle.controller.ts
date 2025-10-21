@@ -39,6 +39,16 @@ export class BattleController {
     return this.battleService.findAll({ page: p, limit: l, search });
   }
 
+  @Get('next')
+  @UseGuards(JwtGuard)
+  async findNext() {
+    const next = await this.battleService.findNext();
+    if (!next) {
+      return { message: 'No battle' };
+    }
+    return next;
+  }
+
   @Get(':id')
   @UseGuards(JwtGuard)
   findOne(@Param('id') id: string) {
