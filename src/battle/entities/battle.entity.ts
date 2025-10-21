@@ -38,16 +38,16 @@ export class Battle {
   @Column({ type: 'varchar', length: 255 })
   title!: string;
 
-  @Column({ type: 'enum', enum: BattleType, default: BattleType.DUEL })
+  @Column({ type: 'simple-enum', enum: BattleType, default: BattleType.DUEL })
   type!: BattleType;
 
   @Column({ type: 'datetime' })
   startTime!: Date;
 
-  @Column({ type: 'enum', enum: BattleStatus, default: BattleStatus.PENDING })
+  @Column({ type: 'simple-enum', enum: BattleStatus, default: BattleStatus.PENDING })
   status!: BattleStatus;
 
-  @Column({ type: 'enum', enum: BettingType, default: BettingType.PARIMUTUEL })
+  @Column({ type: 'simple-enum', enum: BettingType, default: BettingType.PARIMUTUEL })
   bettingType!: BettingType;
 
   @OneToMany(() => Participation, (p) => p.battle, { cascade: ['insert'] })

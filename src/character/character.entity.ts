@@ -24,8 +24,8 @@ export class Character {
   @UpdateDateColumn({ type: 'datetime' })
   updatedAt!: Date;
 
-  @Column({ type: 'varchar', length: 36 })
-  ownerId!: string;
+  @Column({ type: 'varchar', length: 36, nullable: true })
+  ownerId!: string | null;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   owner!: User;

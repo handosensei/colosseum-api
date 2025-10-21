@@ -151,7 +151,6 @@ export class AuthController {
       role: user.role ?? 'user',
       jti,
     });
-    console.log('token', token);
     return {
       token,
       user: {

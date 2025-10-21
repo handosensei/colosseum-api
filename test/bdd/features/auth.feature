@@ -11,12 +11,12 @@ Feature: Authentication via Ethereum wallet (Metamask-like)
     When I request a nonce for my wallet address
     And I sign the nonce message with my wallet
     And I verify the signature to login
-    Then I should receive an auth cookie
-    When I call GET /auth/me with the auth cookie
+    Then I should receive an auth token
+    When I call GET /auth/me with the auth token
     Then the response should include my wallet address
-    When I call POST /auth/logout with the auth cookie
+    When I call POST /auth/logout with the auth token
     Then the logout response should be ok
-    And calling GET /auth/me with the same cookie should be unauthorized
+    And calling GET /auth/me with the same token should be unauthorized
 
   Scenario: Negative - signature does not match address
     Given I have a random wallet

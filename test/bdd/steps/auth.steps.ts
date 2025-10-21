@@ -3,7 +3,7 @@ import { BeforeAll, AfterAll, Given, When, Then, setDefaultTimeout } from '@cucu
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import request from 'supertest';
+import * as supertest from 'supertest';
 import { Wallet } from 'ethers';
 
 import { AuthModule } from '../../../src/auth/auth.module';
@@ -57,7 +57,7 @@ Given('I also have another random wallet', function () {
 });
 
 When('I request a nonce for my wallet address', async function () {
-  const res = await request(http).get('/auth/nonce').query({ address: ctx.address });
+  const res = await supertest(http).get('/auth/nonce').query({ address: ctx.address });
   ctx.res = res;
   if (res.statusCode !== 200) {
     throw new Error('Expected 200 when requesting nonce, got ' + res.statusCode);
@@ -75,23 +75,22 @@ When('I sign the nonce message with the other wallet', async function () {
 });
 
 When('I verify the signature to login', async function () {
-  const res = await request(http)
+  const res = await supertest(http)
     .post('/auth/verify')
     .send({ address: ctx.address, signature: ctx.signature, nonce: ctx.nonce });
   ctx.verifyRes = res;
 });
 
-Then('I should receive an auth cookie', function () {
+Then('I should receive an auth token', function () {
   const res = ctx.verifyRes;
   if (res.statusCode !== 200) throw new Error('Expected 200 on verify');
-  const setCookie = res.headers['set-cookie'];
-  if (!setCookie) throw new Error('No Set-Cookie header present');
-  const cookies: string[] = Array.isArray(setCookie) ? setCookie : [setCookie];
-  ctx.cookieHeader = cookies[0].split(';')[0];
+  const token = res.body?.token;
+  if (!token || typeof token !== 'string') throw new Error('No token in verify response');
+  ctx.authHeader = `Bearer ${token}`;
 });
 
-When('I call GET /auth/me with the auth cookie', async function () {
-  const res = await request(http).get('/auth/me').set('Cookie', ctx.cookieHeader);
+When(/^I call GET \/auth\/me with the auth token$/, async function () {
+  const res = await supertest(http).get('/auth/me').set('Authorization', ctx.authHeader);
   ctx.meRes = res;
 });
 
@@ -103,8 +102,8 @@ Then('the response should include my wallet address', function () {
   }
 });
 
-When('I call POST /auth/logout with the auth cookie', async function () {
-  const res = await request(http).post('/auth/logout').set('Cookie', ctx.cookieHeader);
+When(/^I call POST \/auth\/logout with the auth token$/, async function () {
+  const res = await supertest(http).post('/auth/logout').set('Authorization', ctx.authHeader);
   ctx.logoutRes = res;
 });
 
@@ -114,13 +113,13 @@ Then('the logout response should be ok', function () {
   if (!res.body?.ok) throw new Error('Logout response not ok');
 });
 
-Then('calling GET /auth/me with the same cookie should be unauthorized', async function () {
-  const res = await request(http).get('/auth/me').set('Cookie', ctx.cookieHeader);
+Then(/^calling GET \/auth\/me with the same token should be unauthorized$/, async function () {
+  const res = await supertest(http).get('/auth/me').set('Authorization', ctx.authHeader);
   if (res.statusCode !== 401) throw new Error('Expected 401 after logout for /auth/me');
 });
 
 Then('verifying the signature should be unauthorized', async function () {
-  const res = await request(http)
+  const res = await supertest(http)
     .post('/auth/verify')
     .send({ address: ctx.address, signature: ctx.signature, nonce: ctx.nonce });
   if (res.statusCode !== 401) throw new Error('Expected 401 with wrong signature');
