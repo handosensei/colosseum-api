@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Session } from '../auth/entity/session.entity';
+import { Bet } from '../bet/bet.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -33,4 +34,7 @@ export class User {
 
   @OneToMany(() => Session, (session) => session.user, { cascade: false })
   sessions!: Session[];
+
+  @OneToMany(() => Bet, (b) => b.user)
+  bets: Bet[];
 }

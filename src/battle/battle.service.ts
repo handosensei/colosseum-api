@@ -5,8 +5,8 @@ import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 import { BattleCreateDto } from './dto/battle-create.dto';
 import { BattleUpdateDto } from './dto/battle-update.dto';
-import { Battle } from './entities/battle.entity';
-import { Participation } from './entities/participation.entity';
+import { Battle } from './battle.entity';
+import { Participation } from './participation.entity';
 
 type FindAllParams = { page: number; limit: number; search?: string };
 

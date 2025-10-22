@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { Participation } from '../battle/entities/participation.entity';
+import { Participation } from '../battle/participation.entity';
 
 @Entity({ name: 'character' })
 export class Character {

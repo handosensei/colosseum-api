@@ -5,11 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
-import { Character } from '../../character/character.entity';
 import { Participation } from './participation.entity';
+import { Bet } from '../bet/bet.entity';
 
 export enum BattleStatus {
   PENDING = 'pending',
@@ -44,14 +42,25 @@ export class Battle {
   @Column({ type: 'datetime' })
   startTime!: Date;
 
-  @Column({ type: 'simple-enum', enum: BattleStatus, default: BattleStatus.PENDING })
+  @Column({
+    type: 'simple-enum',
+    enum: BattleStatus,
+    default: BattleStatus.PENDING,
+  })
   status!: BattleStatus;
 
-  @Column({ type: 'simple-enum', enum: BettingType, default: BettingType.PARIMUTUEL })
+  @Column({
+    type: 'simple-enum',
+    enum: BettingType,
+    default: BettingType.PARIMUTUEL,
+  })
   bettingType!: BettingType;
 
   @OneToMany(() => Participation, (p) => p.battle, { cascade: ['insert'] })
   participations: Participation[];
+
+  @OneToMany(() => Bet, (b) => b.battle, { cascade: ['insert'] })
+  bets: Bet[];
 
   @CreateDateColumn({ type: 'datetime' })
   createdAt!: Date;

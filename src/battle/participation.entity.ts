@@ -4,9 +4,11 @@ import {
   ManyToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
+  OneToOne,
 } from 'typeorm';
 import { Battle } from './battle.entity';
-import { Character } from '../../character/character.entity';
+import { Character } from '../character/character.entity';
+import { BettingPool } from '../bet/betting-pool.entity';
 
 @Entity({ name: 'participation' })
 export class Participation {
@@ -30,4 +32,7 @@ export class Participation {
   @ManyToOne(() => Character, (c) => c.participations, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'characterId' })
   character!: Character;
+
+  @OneToOne(() => BettingPool, (p) => p.participation)
+  pool?: BettingPool;
 }

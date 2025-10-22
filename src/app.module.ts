@@ -4,18 +4,24 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { BattleModule } from './battle/battle.module';
+import { CharacterModule } from './character/character.module';
+import { BetModule } from './bet/bet.module';
+
+import { AppController } from './app.controller';
+
+import { AppService } from './app.service';
+
 import { User } from './user/user.entity';
 import { Session } from './auth/entity/session.entity';
 import { Nonce } from './auth/entity/nonce.entity';
-import { BattleModule } from './battle/battle.module';
-import { Battle } from './battle/entities/battle.entity';
+import { Battle } from './battle/battle.entity';
 import { Character } from './character/character.entity';
-import { Participation } from './battle/entities/participation.entity';
-import { CharacterModule } from './character/character.module';
+import { Participation } from './battle/participation.entity';
+import { BettingPool } from './bet/betting-pool.entity';
+import { Bet } from './bet/bet.entity';
 
 @Module({
   imports: [
@@ -33,13 +39,23 @@ import { CharacterModule } from './character/character.module';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Session, Nonce, Battle, Character, Participation],
+      entities: [
+        User,
+        Session,
+        Nonce,
+        Battle,
+        Bet,
+        BettingPool,
+        Character,
+        Participation,
+      ],
       synchronize: true,
     }),
     UserModule,
     AuthModule,
     BattleModule,
     CharacterModule,
+    BetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

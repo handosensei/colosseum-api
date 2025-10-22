@@ -1,12 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BattleService } from './battle.service';
+
 import { BattleController } from './battle.controller';
-import { Battle } from './entities/battle.entity';
+
+import { BattleService } from './battle.service';
+
+import { Battle } from './battle.entity';
 import { Character } from '../character/character.entity';
-import { Participation } from './entities/participation.entity';
-import { AuthModule } from '../auth/auth.module';
+import { Participation } from './participation.entity';
+
 import { CharacterExistsConstraint } from './validators/character-exists.validator';
+
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
