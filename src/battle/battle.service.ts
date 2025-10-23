@@ -26,6 +26,7 @@ export class BattleService {
     return this.battleRepo
       .createQueryBuilder('b')
       .leftJoinAndSelect('b.participations', 'p')
+      .leftJoinAndSelect('p.pool', 'po')
       .leftJoinAndSelect('p.character', 'c')
       .where('b.startTime > :now', { now })
       .orderBy('b.startTime', 'ASC')
