@@ -7,6 +7,7 @@ import { BattleCreateDto } from './dto/battle-create.dto';
 import { BattleUpdateDto } from './dto/battle-update.dto';
 import { Battle } from './battle.entity';
 import { Participation } from './participation.entity';
+import { BettingPoolService } from '../bet/service/betting-pool.service';
 
 type FindAllParams = { page: number; limit: number; search?: string };
 
@@ -17,6 +18,7 @@ export class BattleService {
     private readonly battleRepo: Repository<Battle>,
     @InjectRepository(Participation)
     private readonly participationRepo: Repository<Participation>,
+    private readonly bettingPoolService: BettingPoolService,
   ) {}
 
   async findNext(): Promise<Battle | null> {
@@ -35,6 +37,7 @@ export class BattleService {
     if (new Set(ids).size !== ids.length) {
       throw new BadRequestException('Duplicate characterId in participations');
     }
+
     const battle = this.battleRepo.create({
       title: battleCreateDto.title,
       startTime: new Date(battleCreateDto.startTime),
@@ -43,7 +46,18 @@ export class BattleService {
         isWinner: p.isWinner,
       })),
     });
-    return await this.battleRepo.save(battle);
+
+    const saved = await this.battleRepo.save(battle);
+
+    const reloaded = await this.battleRepo.findOne({
+      where: { id: saved.id },
+      relations: { participations: true },
+      select: { id: true, participations: { id: true } as any },
+    });
+
+    await this.bettingPoolService.ensurePoolsForBattle(reloaded!);
+
+    return reloaded;
   }
 
   async findAll({

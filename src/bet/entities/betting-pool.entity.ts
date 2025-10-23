@@ -1,4 +1,4 @@
-// src/betting/betting-pool.entity.ts
+// src/betting/service.entity.ts
 import {
   Entity,
   Column,
@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
   Unique,
 } from 'typeorm';
-import { Participation } from '../battle/participation.entity';
+import { Participation } from '../../battle/participation.entity';
 
 @Entity({ name: 'betting_pool' })
 @Unique(['participationId']) // garantit un seul pool par outcome

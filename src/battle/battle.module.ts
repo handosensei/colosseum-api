@@ -12,11 +12,13 @@ import { Participation } from './participation.entity';
 import { CharacterExistsConstraint } from './validators/character-exists.validator';
 
 import { AuthModule } from '../auth/auth.module';
+import { BetModule } from '../bet/bet.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Battle, Character, Participation]),
     AuthModule,
+    BetModule,
   ],
   controllers: [BattleController],
   providers: [BattleService, CharacterExistsConstraint],

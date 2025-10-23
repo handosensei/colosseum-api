@@ -20,8 +20,8 @@ import { Nonce } from './auth/entity/nonce.entity';
 import { Battle } from './battle/battle.entity';
 import { Character } from './character/character.entity';
 import { Participation } from './battle/participation.entity';
-import { BettingPool } from './bet/betting-pool.entity';
-import { Bet } from './bet/bet.entity';
+import { BettingPool } from './bet/entities/betting-pool.entity';
+import { Bet } from './bet/entities/bet.entity';
 
 @Module({
   imports: [

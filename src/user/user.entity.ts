@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Session } from '../auth/entity/session.entity';
-import { Bet } from '../bet/bet.entity';
+import { Bet } from '../bet/entities/bet.entity';
 
 @Entity({ name: 'user' })
 export class User {

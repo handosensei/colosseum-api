@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Participation } from './participation.entity';
-import { Bet } from '../bet/bet.entity';
+import { Bet } from '../bet/entities/bet.entity';
 
 export enum BattleStatus {
   PENDING = 'pending',
