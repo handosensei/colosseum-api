@@ -38,8 +38,8 @@ export class Bet {
   @Column('uuid')
   participationId!: string;
 
-  @Column('decimal', { precision: 18, scale: 6 })
-  amount!: string; // string pour DECIMAL
+  @Column('integer')
+  stakedPoints!: number;
 
   @Column({ type: 'enum', enum: BetStatus, default: BetStatus.PENDING })
   status!: BetStatus;

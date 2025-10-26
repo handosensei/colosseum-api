@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Session } from '../auth/entity/session.entity';
 import { Bet } from '../bet/entities/bet.entity';
+import { PointTransaction } from '../bet/entities/point-transaction.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -16,6 +17,9 @@ export class User {
 
   @Column({ type: 'varchar', length: 255, unique: true })
   walletAddress!: string;
+
+  @Column({ type: 'integer', default: 0 })
+  pointsBalance: number;
 
   @CreateDateColumn({ type: 'datetime' })
   createdAt!: Date;
@@ -37,4 +41,10 @@ export class User {
 
   @OneToMany(() => Bet, (b) => b.user)
   bets: Bet[];
+
+  @OneToMany(
+    () => PointTransaction,
+    (pointTransaction) => pointTransaction.user,
+  )
+  pointTransactions: PointTransaction[];
 }
