@@ -7,8 +7,8 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Battle } from './battle.entity';
-import { Character } from '../character/character.entity';
-import { BettingPool } from '../bet/entities/betting-pool.entity';
+import { Character } from '../../character/character.entity';
+import { BettingPool } from '../../bet/entities/betting-pool.entity';
 
 @Entity({ name: 'participation' })
 export class Participation {

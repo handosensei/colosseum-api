@@ -7,14 +7,8 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Participation } from './participation.entity';
-import { Bet } from '../bet/entities/bet.entity';
-
-export enum BattleStatus {
-  PENDING = 'pending',
-  ACTIVE = 'active',
-  FINISHED = 'finished',
-  CANCELLED = 'cancelled',
-}
+import { Bet } from '../../bet/entities/bet.entity';
+import { BattleStatusEnum } from '../enum/battle-status.enum';
 
 export enum BattleType {
   DUEL = 'duel',
@@ -44,10 +38,10 @@ export class Battle {
 
   @Column({
     type: 'simple-enum',
-    enum: BattleStatus,
-    default: BattleStatus.PENDING,
+    enum: BattleStatusEnum,
+    default: BattleStatusEnum.PENDING,
   })
-  status!: BattleStatus;
+  status!: BattleStatusEnum;
 
   @Column({
     type: 'simple-enum',
