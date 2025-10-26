@@ -22,6 +22,7 @@ import { Character } from './character/character.entity';
 import { Participation } from './battle/participation.entity';
 import { BettingPool } from './bet/entities/betting-pool.entity';
 import { Bet } from './bet/entities/bet.entity';
+import { PointTransaction } from './bet/entities/point-transaction.entity';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { Bet } from './bet/entities/bet.entity';
         BettingPool,
         Character,
         Participation,
+        PointTransaction,
       ],
       synchronize: true,
     }),

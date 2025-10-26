@@ -1,17 +1,28 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BettingPool } from './entities/betting-pool.entity';
-import { Bet } from './entities/bet.entity';
+
 import { AuthModule } from '../auth/auth.module';
-import { BettingPoolService } from './service/betting-pool.service';
-import { Participation } from '../battle/participation.entity';
+
 import { BetController } from './bet.controller';
+
+import { BettingPoolService } from './service/betting-pool.service';
 import { BetService } from './service/bet.service';
+
 import { Battle } from '../battle/battle.entity';
+import { Bet } from './entities/bet.entity';
+import { BettingPool } from './entities/betting-pool.entity';
+import { Participation } from '../battle/participation.entity';
+import { PointTransaction } from './entities/point-transaction.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Bet, BettingPool, Participation, Battle]),
+    TypeOrmModule.forFeature([
+      Bet,
+      BettingPool,
+      Participation,
+      Battle,
+      PointTransaction,
+    ]),
     AuthModule,
   ],
   controllers: [BetController],
