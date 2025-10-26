@@ -43,7 +43,7 @@ export class BetService {
     }
 
     // Validate amount > 0
-    const amountNum = Number(dto.amount);
+    const amountNum = Number(dto.stakedPoints);
     if (!isFinite(amountNum) || amountNum <= 0) {
       throw new BadRequestException('amount must be greater than 0');
     }
@@ -53,7 +53,7 @@ export class BetService {
       userId,
       battleId: battle.id,
       participationId: participation.id,
-      amount: dto.amount,
+      stakedPoints: dto.stakedPoints,
       status: BetStatus.PENDING,
     });
     const saved = await this.betRepo.save(bet);
@@ -62,7 +62,7 @@ export class BetService {
     await this.ensurePool(participation.id);
     await this.poolRepo.query(
       'UPDATE betting_pool SET totalVolume = totalVolume + ?, betsCount = betsCount + 1 WHERE participationId = ?',
-      [dto.amount, participation.id],
+      [dto.stakedPoints, participation.id],
     );
 
     return saved;
