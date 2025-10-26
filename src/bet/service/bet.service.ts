@@ -7,8 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Bet, BetStatus } from '../entities/bet.entity';
 import { BettingPool } from '../entities/betting-pool.entity';
-import { Participation } from '../../battle/participation.entity';
-import { Battle, BattleStatus } from '../../battle/battle.entity';
+import { Participation } from '../../battle/entities/participation.entity';
+import { Battle } from '../../battle/entities/battle.entity';
+import { BattleStatusEnum as BattleStatus } from '../../battle/enum/battle-status.enum';
 import { BetCreateDto } from '../dto/bet-create.dto';
 
 @Injectable()

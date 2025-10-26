@@ -8,8 +8,8 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { Participation } from '../../battle/participation.entity';
-import { Battle } from '../../battle/battle.entity';
+import { Participation } from '../../battle/entities/participation.entity';
+import { Battle } from '../../battle/entities/battle.entity';
 import { User } from '../../user/user.entity';
 
 export enum BetStatus {

@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BettingPool } from '../entities/betting-pool.entity';
-import { Participation } from '../../battle/participation.entity';
-import { Battle } from '../../battle/battle.entity';
+import { Participation } from '../../battle/entities/participation.entity';
+import { Battle } from '../../battle/entities/battle.entity';
 
 @Injectable()
 export class BettingPoolService {

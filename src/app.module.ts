@@ -17,12 +17,13 @@ import { AppService } from './app.service';
 import { User } from './user/user.entity';
 import { Session } from './auth/entity/session.entity';
 import { Nonce } from './auth/entity/nonce.entity';
-import { Battle } from './battle/battle.entity';
+import { Battle } from './battle/entities/battle.entity';
 import { Character } from './character/character.entity';
-import { Participation } from './battle/participation.entity';
+import { Participation } from './battle/entities/participation.entity';
 import { BettingPool } from './bet/entities/betting-pool.entity';
 import { Bet } from './bet/entities/bet.entity';
 import { PointTransaction } from './bet/entities/point-transaction.entity';
+import { BattleWorkflowModule } from './workflow/battle-workflow/battle-workflow.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { PointTransaction } from './bet/entities/point-transaction.entity';
     BattleModule,
     CharacterModule,
     BetModule,
+    BattleWorkflowModule,
   ],
   controllers: [AppController],
   providers: [AppService],

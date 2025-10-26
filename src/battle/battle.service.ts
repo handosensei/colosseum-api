@@ -1,13 +1,23 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 import { BattleCreateDto } from './dto/battle-create.dto';
 import { BattleUpdateDto } from './dto/battle-update.dto';
-import { Battle } from './battle.entity';
-import { Participation } from './participation.entity';
+
+import { BattleStatusEnum as BattleStatus } from './enum/battle-status.enum';
+
+import { Battle } from './entities/battle.entity';
+
 import { BettingPoolService } from '../bet/service/betting-pool.service';
+
+import { BattleStatusStateMachine } from '../workflow/battle-workflow/battle-status.machine';
+import { BattleWorkflowQueueService } from '../workflow/battle-workflow/service/battle-workflow-queue.service';
 
 type FindAllParams = { page: number; limit: number; search?: string };
 
@@ -16,9 +26,9 @@ export class BattleService {
   constructor(
     @InjectRepository(Battle)
     private readonly battleRepo: Repository<Battle>,
-    @InjectRepository(Participation)
-    private readonly participationRepo: Repository<Participation>,
     private readonly bettingPoolService: BettingPoolService,
+    private readonly battleStateMachine: BattleStatusStateMachine,
+    private readonly battleWorkflowQueue: BattleWorkflowQueueService,
   ) {}
 
   async findNext(): Promise<Battle | null> {
@@ -53,7 +63,7 @@ export class BattleService {
     const reloaded = await this.battleRepo.findOne({
       where: { id: saved.id },
       relations: { participations: true },
-      select: { id: true, participations: { id: true } as any },
+      select: { id: true, participations: { id: true } },
     });
 
     await this.bettingPoolService.ensurePoolsForBattle(reloaded!);
@@ -76,6 +86,37 @@ export class BattleService {
     }
 
     return paginate<Battle>(qb, { page, limit, route: '/battles' });
+  }
+
+  async updateStatus(battleId: string, requestedStatus: BattleStatus) {
+    const battle = await this.battleRepo.findOne({ where: { id: battleId } });
+    if (!battle) {
+      throw new NotFoundException('Battle not found');
+    }
+
+    // 1. Vérifier la transition métier
+    let newStatus: BattleStatus;
+    try {
+      newStatus = this.battleStateMachine.transition(
+        battle.status,
+        requestedStatus,
+        { battleId },
+      );
+    } catch (err) {
+      throw new BadRequestException((err as Error).message);
+    }
+
+    // 2. Persister le nouvel état
+    battle.status = newStatus;
+    const saved = await this.battleRepo.save(battle);
+
+    // 3. Déclencher l'asynchrone (BullMQ)
+    await this.battleWorkflowQueue.handleBattleStatusChange(
+      battle.id,
+      newStatus,
+    );
+
+    return saved;
   }
 
   findOne(id: string) {

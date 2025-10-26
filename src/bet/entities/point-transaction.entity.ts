@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { User } from '../../user/user.entity';
-import { Battle } from '../../battle/battle.entity';
+import { Battle } from '../../battle/entities/battle.entity';
 import { Bet } from '../../bet/entities/bet.entity';
 
 export enum PointTransactionType {

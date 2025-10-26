@@ -8,10 +8,10 @@ import { BetController } from './bet.controller';
 import { BettingPoolService } from './service/betting-pool.service';
 import { BetService } from './service/bet.service';
 
-import { Battle } from '../battle/battle.entity';
+import { Battle } from '../battle/entities/battle.entity';
 import { Bet } from './entities/bet.entity';
 import { BettingPool } from './entities/betting-pool.entity';
-import { Participation } from '../battle/participation.entity';
+import { Participation } from '../battle/entities/participation.entity';
 import { PointTransaction } from './entities/point-transaction.entity';
 
 @Module({
