@@ -9,12 +9,17 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { BattleService } from './battle.service';
-import { BattleCreateDto } from './dto/battle-create.dto';
-import { BattleUpdateDto } from './dto/battle-update.dto';
+
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+
+import { BattleService } from './battle.service';
+
+import { BattleCreateDto } from './dto/battle-create.dto';
+import { BattleUpdateDto } from './dto/battle-update.dto';
+
+import { BattleStatusEnum } from './enum/battle-status.enum';
 
 @Controller('battles')
 export class BattleController {
@@ -47,6 +52,14 @@ export class BattleController {
       return { message: 'No battle' };
     }
     return next;
+  }
+
+  @Patch(':id/status')
+  async setStatus(
+    @Param('id') id: string,
+    @Body('status') status: BattleStatusEnum,
+  ) {
+    return this.battleService.updateStatus(id, status);
   }
 
   @Get(':id')
