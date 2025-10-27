@@ -4,10 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Nonce } from './entity/nonce.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
-import { User } from '../user/user.entity';
+import { User } from '../user/entity/user.entity';
 import { Session } from './entity/session.entity';
 import { JwtGuard } from './guards/jwt.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { UserModule } from '../user/user.module';
+import { PointTransactionService } from '../user/point-transaction.service';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { RolesGuard } from './guards/roles.guard';
         algorithm: 'HS256',
       },
     }),
+    UserModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtGuard, RolesGuard],

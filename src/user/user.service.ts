@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
+import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -12,7 +12,10 @@ export class UserService {
 
   async create(walletAddress: string): Promise<User> {
     return await this.userRepo.save(
-      this.userRepo.create({ walletAddress: walletAddress }),
+      this.userRepo.create({
+        walletAddress: walletAddress,
+        pointsBalance: 10000,
+      }),
     );
   }
 }

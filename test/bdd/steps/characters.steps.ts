@@ -8,7 +8,7 @@ import * as supertest from 'supertest';
 import { AuthModule } from '../../../src/auth/auth.module';
 import { CharacterModule } from '../../../src/character/character.module';
 
-import { User } from '../../../src/user/user.entity';
+import { User } from '../../../src/user/entity/user.entity';
 import { Session } from '../../../src/auth/entity/session.entity';
 import { Nonce } from '../../../src/auth/entity/nonce.entity';
 import { Character } from '../../../src/character/character.entity';

@@ -6,9 +6,9 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Session } from '../auth/entity/session.entity';
-import { Bet } from '../bet/entities/bet.entity';
-import { PointTransaction } from '../bet/entities/point-transaction.entity';
+import { Session } from '../../auth/entity/session.entity';
+import { Bet } from '../../bet/entities/bet.entity';
+import { PointTransaction } from './point-transaction.entity';
 
 @Entity({ name: 'user' })
 export class User {

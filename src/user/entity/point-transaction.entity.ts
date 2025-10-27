@@ -6,16 +6,16 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { User } from '../../user/user.entity';
+import { User } from './user.entity';
 import { Battle } from '../../battle/entities/battle.entity';
 import { Bet } from '../../bet/entities/bet.entity';
 
 export enum PointTransactionType {
-  INITIAL_GRANT = 'INITIAL_GRANT', // points de départ
-  BET_STAKE = 'BET_STAKE', // on retire des points quand il mise
-  BET_PAYOUT = 'BET_PAYOUT', // on crédite quand il gagne
-  BET_REFUND = 'BET_REFUND', // on crédite si pari remboursé
-  ADMIN_ADJUST = 'ADMIN_ADJUST', // ajustement manuel modération
+  INITIAL_GRANT = 'initial_grant', // points de départ
+  BET_STAKE = 'bet_stake', // on retire des points quand il mise
+  BET_PAYOUT = 'bet_payout', // on crédite quand il gagne
+  BET_REFUND = 'bet_refund', // on crédite si pari remboursé
+  ADMIN_ADJUST = 'admin_adjust', // ajustement manuel modération
 }
 
 @Entity('point_transactions')
@@ -26,7 +26,7 @@ export class PointTransaction {
   @ManyToOne(() => User, (user) => user.pointTransactions, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column({ type: 'uuid' })
@@ -52,7 +52,7 @@ export class PointTransaction {
 
   // rattacher à un combat si pertinent (facilite l'audit)
   @ManyToOne(() => Battle, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'battle_id' })
+  @JoinColumn({ name: 'battleId' })
   battle: Battle | null;
 
   @Column({ type: 'uuid', nullable: true })
@@ -60,7 +60,7 @@ export class PointTransaction {
 
   // rattacher à un bet si pertinent
   @ManyToOne(() => Bet, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'bet_id' })
+  @JoinColumn({ name: 'betId' })
   bet: Bet | null;
 
   @Column({ type: 'uuid', nullable: true })

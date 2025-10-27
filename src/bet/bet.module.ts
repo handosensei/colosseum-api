@@ -12,22 +12,14 @@ import { Battle } from '../battle/entities/battle.entity';
 import { Bet } from './entities/bet.entity';
 import { BettingPool } from './entities/betting-pool.entity';
 import { Participation } from '../battle/entities/participation.entity';
-import { PointTransaction } from './entities/point-transaction.entity';
-import { PointTransactionService } from './service/point-transaction.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Bet,
-      BettingPool,
-      Participation,
-      Battle,
-      PointTransaction,
-    ]),
+    TypeOrmModule.forFeature([Bet, BettingPool, Participation, Battle]),
     AuthModule,
   ],
   controllers: [BetController],
-  providers: [BettingPoolService, BetService, PointTransactionService],
+  providers: [BettingPoolService, BetService],
   exports: [BettingPoolService, TypeOrmModule],
 })
 export class BetModule {}

@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BettingPool } from '../entities/betting-pool.entity';
-import { Participation } from '../../battle/entities/participation.entity';
 import { Battle } from '../../battle/entities/battle.entity';
 
 @Injectable()
@@ -12,8 +11,6 @@ export class BettingPoolService {
   constructor(
     @InjectRepository(BettingPool)
     private readonly poolRepo: Repository<BettingPool>,
-    @InjectRepository(Participation)
-    private participationRepo: Repository<Participation>,
   ) {}
 
   // Ensure there is one betting pool per participation for a given battle

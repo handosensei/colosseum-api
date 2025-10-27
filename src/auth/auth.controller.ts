@@ -15,9 +15,11 @@ import { Nonce } from './entity/nonce.entity';
 import { randomBytes, randomUUID } from 'crypto';
 import { verifyMessage } from 'ethers';
 import { AuthService } from './auth.service';
-import { User } from '../user/user.entity';
+import { User } from '../user/entity/user.entity';
 import { Session } from './entity/session.entity';
 import type { Request } from 'express';
+import { UserService } from '../user/user.service';
+import { PointTransactionService } from '../user/point-transaction.service';
 
 const NONCE_EXP_MS = 5 * 60 * 1000; // 5 minutes
 const SESSION_EXP_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -32,6 +34,8 @@ export class AuthController {
     @InjectRepository(Session)
     private readonly sessionRepo: Repository<Session>,
     private readonly auth: AuthService,
+    private readonly userService: UserService,
+    private readonly pointTransactionService: PointTransactionService,
   ) {}
 
   @Get('nonce')
@@ -122,9 +126,8 @@ export class AuthController {
       where: { walletAddress: normalized },
     });
     if (!user) {
-      user = await this.userRepo.save(
-        this.userRepo.create({ walletAddress: normalized }),
-      );
+      user = await this.userService.create(normalized);
+      await this.pointTransactionService.init(user);
     } else {
       await this.userRepo.update(
         { id: user.id },

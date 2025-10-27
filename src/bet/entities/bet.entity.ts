@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Participation } from '../../battle/entities/participation.entity';
 import { Battle } from '../../battle/entities/battle.entity';
-import { User } from '../../user/user.entity';
+import { User } from '../../user/entity/user.entity';
 
 export enum BetStatus {
   PENDING = 'pending',

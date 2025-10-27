@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../../user/user.entity';
+import { User } from './entity/user.entity';
 import {
   PointTransaction,
   PointTransactionType,
-} from '../entities/point-transaction.entity';
+} from './entity/point-transaction.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -15,9 +15,11 @@ export class PointTransactionService {
   ) {}
 
   async init(user: User) {
+    console.log('init');
     await this.pointTransactionRepo.save({
-      user: user,
+      userId: user.id,
       amount: 10000,
+      balanceAfter: 10000,
       type: PointTransactionType.INITIAL_GRANT,
     });
   }

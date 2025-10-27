@@ -7,7 +7,7 @@ import * as supertest from 'supertest';
 import { Wallet } from 'ethers';
 
 import { AuthModule } from '../../../src/auth/auth.module';
-import { User } from '../../../src/user/user.entity';
+import { User } from '../../../src/user/entity/user.entity';
 import { Session } from '../../../src/auth/entity/session.entity';
 import { Nonce } from '../../../src/auth/entity/nonce.entity';
 
