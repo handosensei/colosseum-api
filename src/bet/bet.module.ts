@@ -13,6 +13,7 @@ import { Bet } from './entities/bet.entity';
 import { BettingPool } from './entities/betting-pool.entity';
 import { Participation } from '../battle/entities/participation.entity';
 import { PointTransaction } from './entities/point-transaction.entity';
+import { PointTransactionService } from './service/point-transaction.service';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { PointTransaction } from './entities/point-transaction.entity';
     AuthModule,
   ],
   controllers: [BetController],
-  providers: [BettingPoolService, BetService],
+  providers: [BettingPoolService, BetService, PointTransactionService],
   exports: [BettingPoolService, TypeOrmModule],
 })
 export class BetModule {}
