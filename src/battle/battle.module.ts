@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { BattleController } from './battle.controller';
+import { BattleController } from './controllers/battle.controller';
 
 import { BattleService } from './battle.service';
 
@@ -14,6 +14,7 @@ import { CharacterExistsConstraint } from './validators/character-exists.validat
 import { AuthModule } from '../auth/auth.module';
 import { BetModule } from '../bet/bet.module';
 import { BattleWorkflowModule } from '../workflow/battle-workflow/battle-workflow.module';
+import { BattleVideoController } from './controllers/battle-video.controller';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { BattleWorkflowModule } from '../workflow/battle-workflow/battle-workflo
     BetModule,
     BattleWorkflowModule,
   ],
-  controllers: [BattleController],
+  controllers: [BattleController, BattleVideoController],
   providers: [BattleService, CharacterExistsConstraint],
 })
 export class BattleModule {}
