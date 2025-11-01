@@ -9,10 +9,9 @@ import { AuthModule } from './auth/auth.module';
 import { BattleModule } from './battle/battle.module';
 import { CharacterModule } from './character/character.module';
 import { BetModule } from './bet/bet.module';
+import { BattleWorkflowModule } from './workflow/battle-workflow/battle-workflow.module';
 
 import { AppController } from './app.controller';
-
-import { BattleWorkflowModule } from './workflow/battle-workflow/battle-workflow.module';
 
 import { AppService } from './app.service';
 

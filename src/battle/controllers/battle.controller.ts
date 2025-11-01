@@ -20,8 +20,6 @@ import { BattleCreateDto } from '../dto/battle-create.dto';
 import { BattleUpdateDto } from '../dto/battle-update.dto';
 
 import { BattleStatusEnum } from '../enum/battle-status.enum';
-import { Repository } from 'typeorm';
-import { Battle, VideoStatus } from '../entities/battle.entity';
 
 @Controller('battles')
 export class BattleController {

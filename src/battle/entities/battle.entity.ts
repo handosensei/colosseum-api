@@ -22,6 +22,13 @@ export enum BettingType {
   // FIXED_ODDS = 'FIXED_ODDS',
 }
 
+export enum VideoStatus {
+  NONE = 'none', // aucune vidéo déclarée
+  UPLOADING = 'uploading', // l'admin a lancé l'upload chez Cloudflare
+  READY = 'ready', // Cloudflare a fini l'encodage
+  ERROR = 'error', // encodage raté
+}
+
 @Entity({ name: 'battle' })
 export class Battle {
   @PrimaryGeneratedColumn('uuid')
@@ -37,6 +44,13 @@ export class Battle {
   startTime!: Date;
 
   @Column({
+    type: 'enum',
+    enum: VideoStatus,
+    default: VideoStatus.NONE,
+  })
+  videoStatus: VideoStatus;
+
+  @Column({
     type: 'simple-enum',
     enum: BattleStatusEnum,
     default: BattleStatusEnum.PENDING,
@@ -49,6 +63,20 @@ export class Battle {
     default: BettingType.PARIMUTUEL,
   })
   bettingType!: BettingType;
+
+  @Column({ nullable: true })
+  streamPlaybackId?: string;
+  // Cloudflare Stream te renvoie un playback ID (c’est ce que tu utilises pour lire la vidéo)
+
+  @Column({ nullable: true })
+  streamUid?: string;
+  // ID interne Cloudflare Stream de l’asset (utile pour debug / suppression / stats)
+
+  @Column({ type: 'int', nullable: true })
+  durationSec?: number;
+
+  @Column({ nullable: true })
+  thumbnailUrl?: string;
 
   @OneToMany(() => Participation, (p) => p.battle, { cascade: ['insert'] })
   participations: Participation[];

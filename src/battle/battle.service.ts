@@ -4,7 +4,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 import { BattleCreateDto } from './dto/battle-create.dto';
@@ -39,6 +39,7 @@ export class BattleService {
       .leftJoinAndSelect('p.pool', 'po')
       .leftJoinAndSelect('p.character', 'c')
       .where('b.startTime > :now', { now })
+      .andWhere('b.status = :status', { status: BattleStatus.ACTIVE })
       .orderBy('b.startTime', 'ASC')
       .getOne();
   }
@@ -119,8 +120,11 @@ export class BattleService {
     return saved;
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} battle`;
+  async findBattleById(id: string): Promise<Battle | null> {
+    return await this.battleRepo
+      .createQueryBuilder('b')
+      .where('b.id = :id', { id })
+      .getOne();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
