@@ -25,6 +25,7 @@ import { Participation } from './battle/entities/participation.entity';
 import { BettingPool } from './bet/entities/betting-pool.entity';
 import { Bet } from './bet/entities/bet.entity';
 import { PointTransaction } from './user/entity/point-transaction.entity';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { PointTransaction } from './user/entity/point-transaction.entity';
     CharacterModule,
     BetModule,
     BattleWorkflowModule,
+    ClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],
