@@ -3,5 +3,6 @@ import { CloudflareStreamService } from './cloudflare-stream/cloudflare-stream.s
 
 @Module({
   providers: [CloudflareStreamService],
+  exports: [CloudflareStreamService],
 })
 export class ClientModule {}

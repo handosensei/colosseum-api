@@ -22,7 +22,7 @@ export class CloudflareStreamService {
    */
   async createDirectUpload() {
     try {
-      return await axios.post(
+      const res = await axios.post(
         `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/stream/direct_upload`,
         {
           // Tu peux forcer certaines règles ici
@@ -36,6 +36,7 @@ export class CloudflareStreamService {
           },
         },
       );
+      return res.data;
     } catch (e) {
       console.error(
         'Cloudflare createDirectUpload error:',
@@ -53,7 +54,7 @@ export class CloudflareStreamService {
    */
   async getVideoInfo(uid: string) {
     try {
-      return await axios.get(
+      const res = await axios.get(
         `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/stream/${uid}`,
         {
           headers: {
@@ -61,6 +62,7 @@ export class CloudflareStreamService {
           },
         },
       );
+      return res.data;
     } catch (e) {
       console.error('Cloudflare getVideoInfo error:', e?.response?.data || e);
       throw new InternalServerErrorException(
