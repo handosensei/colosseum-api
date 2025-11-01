@@ -12,7 +12,7 @@ import { JwtGuard } from '../../auth/guards/jwt.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
 
-import { CloudflareStreamService } from '../../client/cloudflare-stream/cloudflare-stream.service';
+import { CloudflareStreamService } from '../../client/service/cloudflare-stream.service';
 
 import { Battle, VideoStatus } from '../entities/battle.entity';
 import { BattleStatusEnum } from '../enum/battle-status.enum';
