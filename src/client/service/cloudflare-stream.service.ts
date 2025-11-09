@@ -1,14 +1,30 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import axios from 'axios';
 import * as jwt from 'jsonwebtoken';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CloudflareStreamService {
-  private accountId = process.env.CLOUDFLARE_ACCOUNT_ID!;
-  private apiToken = process.env.CLOUDFLARE_STREAM_API_TOKEN!;
-  private playbackBase =
-    process.env.CLOUDFLARE_STREAM_PLAYBACK_URL_BASE ||
-    'https://watch.cloudflarestream.com';
+  private accountId: string;
+  private apiToken: string;
+  private playbackBase: string;
+
+  constructor(private readonly config: ConfigService) {
+    const raw = this.config.get<string>('CLOUDFLARE_ACCOUNT_ID') ?? '';
+
+    this.accountId = raw.trim().replace(/^["']|["']$/g, '');
+    this.apiToken = this.config.get<string>('CLOUDFLARE_STREAM_API_TOKEN')!;
+    this.playbackBase =
+      this.config.get<string>('CLOUDFLARE_STREAM_PLAYBACK_URL_BASE') ||
+      'https://watch.cloudflarestream.com';
+
+    if (!/^[a-f0-9]{32}$/i.test(this.accountId)) {
+      throw new Error('CLOUDFLARE_ACCOUNT_ID invalide ou non chargé');
+    }
+    if (!this.apiToken) {
+      throw new Error('CLOUDFLARE_STREAM_API_TOKEN manquant.');
+    }
+  }
 
   /**
    * Crée un "direct upload" chez Cloudflare Stream.
@@ -21,14 +37,11 @@ export class CloudflareStreamService {
    * }
    */
   async createDirectUpload() {
+    const url = `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/stream/direct_upload`
     try {
       const res = await axios.post(
-        `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/stream/direct_upload`,
-        {
-          // Tu peux forcer certaines règles ici
-          // requireSignedURLs: true, // utile si tu veux obliger un token pour la lecture
-          maxDurationSeconds: 15 * 60, // 15 minutes max, par exemple
-        },
+        url,
+        { maxDurationSeconds: 15 * 60 },
         {
           headers: {
             Authorization: `Bearer ${this.apiToken}`,

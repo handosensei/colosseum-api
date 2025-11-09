@@ -9,6 +9,8 @@ import {
   UseGuards,
   Query, BadRequestException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { JwtGuard } from '../../auth/guards/jwt.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
@@ -20,10 +22,17 @@ import { BattleCreateDto } from '../dto/battle-create.dto';
 import { BattleUpdateDto } from '../dto/battle-update.dto';
 
 import { BattleStatusEnum } from '../enum/battle-status.enum';
+import { Battle, VideoStatus } from '../entities/battle.entity';
+import { CloudflareStreamService } from '../../client/service/cloudflare-stream.service';
 
 @Controller('battles')
 export class BattleController {
-  constructor(private readonly battleService: BattleService) {}
+  constructor(
+    private readonly battleService: BattleService,
+    private readonly cloudflareStreamService: CloudflareStreamService,
+    @InjectRepository(Battle)
+    private battleRepo: Repository<Battle>,
+  ) {}
 
   @Post()
   @UseGuards(JwtGuard, RolesGuard)
@@ -69,18 +78,18 @@ export class BattleController {
     // Appel Cloudflare Stream API: créer un "direct upload"
     // Body typique: { maxDurationSeconds?, requireSignedURLs?: true, ... }
     // Réponse: { uploadURL, uid, ... }
-    return {};
-    // const cfRes = await this.cloudflareStreamService.createDirectUpload();
+    // return {};
+    const cfRes = await this.cloudflareStreamService.createDirectUpload();
     // // cfRes.uploadURL, cfRes.result.uid ...
-    //
-    // battle.videoStatus = VideoStatus.UPLOADING;
-    // battle.streamUid = cfRes.result.uid;
-    // await this.battleRepo.save(battle);
-    //
-    // return {
-    //   uploadURL: cfRes.result.uploadURL,
-    //   uid: cfRes.result.uid,
-    // };
+    console.log('cfRes', cfRes);
+    battle.videoStatus = VideoStatus.UPLOADING;
+    battle.streamUid = cfRes.result.uid;
+    await this.battleRepo.save(battle);
+
+    return {
+      uploadURL: cfRes.result.uploadURL,
+      uid: cfRes.result.uid,
+    };
   }
 
   @Patch(':id/status')

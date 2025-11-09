@@ -34,6 +34,7 @@ import { ClientModule } from './client/client.module';
     }),
     ConfigModule.forRoot({
       envFilePath: ['.env'],
+      isGlobal: true,
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',

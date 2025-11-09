@@ -17,6 +17,7 @@ import { CharacterExistsConstraint } from './validators/character-exists.validat
 
 import { AuthModule } from '../auth/auth.module';
 import { BetModule } from '../bet/bet.module';
+import { BattlePlaybackController } from './controllers/battle-playback.controller';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { BetModule } from '../bet/bet.module';
     BattleWorkflowModule,
     ClientModule,
   ],
-  controllers: [BattleController, BattleVideoController],
+  controllers: [BattleController, BattleVideoController, BattlePlaybackController],
   providers: [BattleService, CharacterExistsConstraint],
 })
 export class BattleModule {}
