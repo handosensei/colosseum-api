@@ -78,6 +78,12 @@ export class Battle {
   @Column({ nullable: true })
   thumbnailUrl?: string;
 
+  @Column({ nullable: true })
+  streamPlaybackHls?: string;
+
+  @Column({ nullable: true })
+  streamPlaybackDash?: string;
+
   @OneToMany(() => Participation, (p) => p.battle, { cascade: ['insert'] })
   participations: Participation[];
 

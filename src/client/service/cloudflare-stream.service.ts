@@ -1,13 +1,21 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus
+} from '@nestjs/common';
 import axios from 'axios';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class CloudflareStreamService {
   private accountId: string;
   private apiToken: string;
   private playbackBase: string;
+  private readonly maxSkewSec = 5 * 60;
 
   constructor(private readonly config: ConfigService) {
     const raw = this.config.get<string>('CLOUDFLARE_ACCOUNT_ID') ?? '';
@@ -58,6 +66,69 @@ export class CloudflareStreamService {
       throw new InternalServerErrorException(
         'Unable to create Cloudflare direct upload',
       );
+    }
+  }
+
+  checkWebhookValidity(webhookSignature: string | undefined, body: any) {
+    const secret = process.env.CLOUDFLARE_STREAM_WEBHOOK_SECRET;
+    if (!secret) {
+      throw new Error('Missing CLOUDFLARE_STREAM_WEBHOOK_SECRET');
+    }
+
+    if (!webhookSignature) {
+      throw new HttpException('Missing Webhook-Signature', HttpStatus.UNAUTHORIZED);
+    }
+
+    const parts = Object.fromEntries(
+      webhookSignature.split(',').map(kv => {
+        const [k, v] = kv.split('=');
+        return [k.trim(), (v ?? '').trim()];
+      }),
+    );
+    const timeStr = parts.time;
+    const sig1 = parts.sig1;
+
+    if (!timeStr || !sig1) {
+      throw new HttpException('Invalid signature format', HttpStatus.UNAUTHORIZED);
+    }
+
+    const now = Math.floor(Date.now() / 1000);
+    const t = Number(timeStr);
+    if (!Number.isFinite(t) || Math.abs(now - t) > this.maxSkewSec) {
+      throw new HttpException('Stale webhook timestamp', HttpStatus.UNAUTHORIZED);
+    }
+
+    const rawBody: Buffer = body;
+    const source = Buffer.concat([Buffer.from(timeStr + '.', 'utf8'), rawBody]);
+
+    const expectedHex = crypto
+      .createHmac('sha256', Buffer.from(secret, 'utf8'))
+      .update(source)
+      .digest('hex');
+
+    const isValid =
+      expectedHex.length === sig1.length &&
+      crypto.timingSafeEqual(Buffer.from(expectedHex, 'hex'), Buffer.from(sig1, 'hex'));
+
+    if (!isValid) {
+      throw new HttpException('Invalid signature', HttpStatus.UNAUTHORIZED);
+    }
+
+    return true;
+  }
+
+  extractStreamPlaybackId(url: string): string | null {
+    try {
+      const u = new URL(url);
+      const segments = u.pathname.split("/").filter(Boolean);
+
+      if (segments.length >= 1) {
+        return segments[0]; // premier segment = playbackId
+      }
+
+      return null;
+    } catch {
+      return null;
     }
   }
 

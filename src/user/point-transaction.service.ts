@@ -15,7 +15,6 @@ export class PointTransactionService {
   ) {}
 
   async init(user: User) {
-    console.log('init');
     await this.pointTransactionRepo.save({
       userId: user.id,
       amount: 10000,

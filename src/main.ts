@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
 
+import * as bodyParser from 'body-parser';
+
 async function bootstrap() {
   const whitelist = [
     'http://localhost:3001',
@@ -26,9 +28,10 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   const port = process.env.PORT ? Number(process.env.PORT) : 3000;
-  console.log(`process.env.PORT : ${process.env.PORT}`);
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  app.use('/webhooks/cloudflare-stream', bodyParser.raw({ type: 'application/json' }));
 
   await app.listen(port);
 }

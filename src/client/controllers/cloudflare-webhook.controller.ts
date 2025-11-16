@@ -1,76 +1,67 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Query,
-  BadRequestException,
-} from '@nestjs/common';
+import { Controller, HttpException, HttpStatus, Post, Req, Res, HttpCode } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
 import { Battle, VideoStatus } from '../../battle/entities/battle.entity';
+import { CloudflareStreamService } from '../service/cloudflare-stream.service';
+
+type StreamPayload = {
+  uid: string;
+  readyToStream?: boolean;
+  status?: { state?: string; pctComplete?: string; errorReasonCode?: string; errorReasonText?: string };
+  playback?: { hls?: string; dash?: string };
+  duration?: number;
+  thumbnail?: string;
+  // ... autres champs selon tes besoins
+};
 
 @Controller('webhooks')
 export class CloudflareWebhookController {
+
   constructor(
     @InjectRepository(Battle)
     private battleRepo: Repository<Battle>,
-  ) {}
+    private cfStream: CloudflareStreamService,
+  ) {
+
+  }
 
   @Post('cloudflare-stream')
-  async handleWebhook(
-    @Query('secret') secret: string,
-    @Body() payload: any,
-  ) {
-    // 1. sécurité webhook
-    if (secret !== process.env.CLOUDFLARE_STREAM_WEBHOOK_SECRET) {
-      throw new BadRequestException('Invalid webhook secret');
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async handleWebhook(@Req() req: Request) {
+    try {
+      this.cfStream.checkWebhookValidity(
+        req.headers['webhook-signature'],
+        req.body
+      );
+    } catch (e) {
+      console.log('CF Stream webhook ERROR:', e);
     }
 
-    // 2. on récupère les infos envoyées
-    // payload typique (simplifié) peut ressembler à :
-    // {
-    //   uid: "abCDefGhijkLmnoP",
-    //   readyToStream: true,
-    //   duration: 123.456,
-    //   thumbnail: "https://.../thumbnail.jpg",
-    //   playback: { id: "playbackId123" }
-    // }
-    const {
-      uid,
-      readyToStream,
-      duration,
-      thumbnail,
-      playback,
-      error,
-    } = payload;
-
-    // 3. trouver la battle qui correspond à cette vidéo
-    const battle = await this.battleRepo.findOne({
-      where: { streamUid: uid },
-    });
-
-    if (!battle) {
-      // rien à mettre à jour mais on ne doit pas planter le webhook
-      return { ok: true, note: 'battle not found for uid' };
+    const rawBody: Buffer = req.body as any;
+    let payload: StreamPayload;
+    try {
+      payload = JSON.parse(rawBody.toString('utf8'));
+    } catch {
+      throw new HttpException('Invalid JSON', HttpStatus.BAD_REQUEST);
     }
 
-    if (error) {
-      // encodage a échoué
-      battle.videoStatus = VideoStatus.ERROR;
-      await this.battleRepo.save(battle);
-      return { ok: true, note: 'marked as error' };
-    }
+    const battle = await this.battleRepo.findOne({ where: { streamUid: payload.uid }});
+    if (battle) {
+      battle.videoStatus = payload.status?.state === 'error' ? VideoStatus.ERROR
+                       : payload.readyToStream ? VideoStatus.READY
+                       : VideoStatus.UPLOADING;
+      battle.durationSec = Math.round(payload.duration ?? battle.durationSec ?? 0);
+      battle.thumbnailUrl = payload.thumbnail ?? battle.thumbnailUrl;
 
-    if (readyToStream) {
-      battle.videoStatus = VideoStatus.READY;
-      battle.streamPlaybackId = playback?.id || battle.streamPlaybackId;
-      battle.durationSec = Math.round(duration);
-      battle.thumbnailUrl = thumbnail || battle.thumbnailUrl;
+      battle.streamPlaybackHls = payload.playback?.hls ?? battle.streamPlaybackHls;
+      battle.streamPlaybackDash = payload.playback?.dash ?? battle.streamPlaybackDash;
+      battle.streamPlaybackId = this.cfStream.extractStreamPlaybackId(battle.streamPlaybackDash);
+
       await this.battleRepo.save(battle);
     }
 
-    return { ok: true };
+    return {};
   }
 }

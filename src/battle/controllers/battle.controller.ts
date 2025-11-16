@@ -75,13 +75,7 @@ export class BattleController {
       throw new BadRequestException('Battle not pending');
     }
 
-    // Appel Cloudflare Stream API: créer un "direct upload"
-    // Body typique: { maxDurationSeconds?, requireSignedURLs?: true, ... }
-    // Réponse: { uploadURL, uid, ... }
-    // return {};
     const cfRes = await this.cloudflareStreamService.createDirectUpload();
-    // // cfRes.uploadURL, cfRes.result.uid ...
-    console.log('cfRes', cfRes);
     battle.videoStatus = VideoStatus.UPLOADING;
     battle.streamUid = cfRes.result.uid;
     await this.battleRepo.save(battle);
