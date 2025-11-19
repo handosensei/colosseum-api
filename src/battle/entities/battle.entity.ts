@@ -64,8 +64,8 @@ export class Battle {
   })
   bettingType!: BettingType;
 
-  @Column({ nullable: true })
-  streamPlaybackId?: string;
+  @Column({ type: 'varchar', nullable: true })
+  streamPlaybackId?: string | null;
   // Cloudflare Stream te renvoie un playback ID (c’est ce que tu utilises pour lire la vidéo)
 
   @Column({ nullable: true })

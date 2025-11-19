@@ -117,7 +117,10 @@ export class CloudflareStreamService {
     return true;
   }
 
-  extractStreamPlaybackId(url: string): string | null {
+  extractStreamPlaybackId(url: string | null | undefined): string | null {
+    if (url === undefined || url === null || url === '') {
+      return null;
+    }
     try {
       const u = new URL(url);
       const segments = u.pathname.split("/").filter(Boolean);
